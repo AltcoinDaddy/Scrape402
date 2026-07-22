@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import { x402Client, wrapFetchWithPayment, x402HTTPClient } from "@x402/fetch";
-import { toClientAvmSigner, ExactAvmScheme, ALGORAND_TESTNET_CAIP2 } from "@x402/avm";
+import { toClientAvmSigner, ExactAvmScheme, ALGORAND_MAINNET_CAIP2 } from "@x402/avm";
 import algosdk from "algosdk";
 
 config();
@@ -21,7 +21,7 @@ async function main(): Promise<void> {
     const avmSigner = toClientAvmSigner(secretKeyBase64);
     const client = new x402Client();
 
-    client.register(ALGORAND_TESTNET_CAIP2, new ExactAvmScheme(avmSigner));
+    client.register(ALGORAND_MAINNET_CAIP2, new ExactAvmScheme(avmSigner));
     console.info(`🤖 AI Agent Wallet Address: ${account.addr}`);
     console.info(`🎯 Requesting URL: ${targetUrl}`);
 

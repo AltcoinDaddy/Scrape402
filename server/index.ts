@@ -7,7 +7,7 @@ import { ExactAvmScheme } from "@x402/avm/exact/server";
 import { HTTPFacilitatorClient } from "@x402/core/server";
 import { declareDiscoveryExtension, bazaarResourceServerExtension } from "@x402-avm/extensions";
 import type { ResourceServerExtension } from "@x402/core/types";
-import { ALGORAND_TESTNET_CAIP2, USDC_TESTNET_ASA_ID } from "@x402/avm";
+import { ALGORAND_MAINNET_CAIP2 } from "@x402/avm";
 import { chromium } from "playwright";
 import TurndownService from "turndown";
 
@@ -24,7 +24,7 @@ const facilitatorUrl = process.env.FACILITATOR_URL || "https://testnet.goplausib
 
 const facilitatorClient = new HTTPFacilitatorClient({ url: facilitatorUrl });
 const server = new x402ResourceServer(facilitatorClient)
-    .register(ALGORAND_TESTNET_CAIP2, new ExactAvmScheme());
+    .register(ALGORAND_MAINNET_CAIP2, new ExactAvmScheme());
 
 // Register Bazaar discovery extension
 server.registerExtension(bazaarResourceServerExtension as unknown as ResourceServerExtension);
@@ -121,10 +121,10 @@ app.use(
                     {
                         scheme: "exact",
                         price: "0.1",
-                        network: ALGORAND_TESTNET_CAIP2,
+                        network: ALGORAND_MAINNET_CAIP2,
                         payTo: avmAddress,
                         extra: { 
-                            asset: USDC_TESTNET_ASA_ID,
+                            asset: 31566704,
                             tag: "x402-global-challenge"
                         },
                     },
