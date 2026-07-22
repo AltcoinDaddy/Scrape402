@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
+import { swaggerUI } from "@hono/swagger-ui";
 import { paymentMiddleware, x402ResourceServer } from "@x402/hono";
 import { ExactAvmScheme } from "@x402/avm/exact/server";
 import { HTTPFacilitatorClient } from "@x402/core/server";
@@ -60,6 +61,55 @@ app.get('/', (c) => {
             </body>
         </html>
     `);
+});
+
+// Swagger UI and OpenAPI Spec
+app.get('/docs', swaggerUI({ url: '/openapi.json' }));
+app.get('/openapi.json', (c) => {
+    return c.json({
+        openapi: '3.0.0',
+        info: {
+            title: 'Scrape402 API',
+            version: '1.0.0',
+            description: 'Autonomous x402-gated web scraping API'
+        },
+        paths: {
+            '/scrape': {
+                get: {
+                    summary: 'Scrape a URL to Markdown',
+                    parameters: [
+                        {
+                            name: 'url',
+                            in: 'query',
+                            required: true,
+                            schema: { type: 'string' },
+                            description: 'The URL to scrape'
+                        }
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'Successful scraping',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'object',
+                                        properties: {
+                                            markdown: { type: 'string' },
+                                            url: { type: 'string' },
+                                            timestamp: { type: 'string' }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        '402': {
+                            description: 'Payment Required via x402 protocol'
+                        }
+                    }
+                }
+            }
+        }
+    });
 });
 
 // Apply x402 payment middleware
