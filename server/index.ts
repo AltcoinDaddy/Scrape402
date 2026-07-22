@@ -40,6 +40,28 @@ const scrapeDiscovery = declareDiscoveryExtension({
 
 const app = new Hono();
 
+// Root route for browsers and judges
+app.get('/', (c) => {
+    return c.html(`
+        <html>
+            <head>
+                <title>Scrape402 API</title>
+                <style>
+                    body { font-family: system-ui, sans-serif; padding: 40px; background: #000; color: #fff; line-height: 1.6; }
+                    h1 { color: #00ff88; }
+                    a { color: #00aaff; }
+                </style>
+            </head>
+            <body>
+                <h1>🤖 Scrape402 API is live!</h1>
+                <p>This is an x402-gated autonomous web scraping endpoint on the Algorand blockchain.</p>
+                <p>To use this API, you must send an HTTP GET request to <code>/scrape?url=...</code> and pay the required 0.1 USDC via the x402 protocol.</p>
+                <p>Server Wallet: <code>${avmAddress}</code></p>
+            </body>
+        </html>
+    `);
+});
+
 // Apply x402 payment middleware
 app.use(
     paymentMiddleware(
