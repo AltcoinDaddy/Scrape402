@@ -1,13 +1,23 @@
-FROM mcr.microsoft.com/playwright:v1.41.0-jammy
+FROM node:20-bookworm-slim
 
 # Set working directory
 WORKDIR /app
 
+# Install necessary OS dependencies for Playwright
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Install dependencies
+# Install application dependencies
 RUN npm install
+
+# Install ONLY the Chromium browser and its specific OS dependencies
+# This drastically reduces the image size compared to the official Playwright image
+RUN npx playwright install --with-deps chromium
 
 # Copy the rest of the application code
 COPY . .
