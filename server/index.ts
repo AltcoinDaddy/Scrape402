@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
+import { serveStatic } from "@hono/node-server/serve-static";
 import { swaggerUI } from "@hono/swagger-ui";
 import { paymentMiddleware, x402ResourceServer } from "@x402/hono";
 import { ExactAvmScheme } from "@x402/avm/exact/server";
@@ -41,12 +42,18 @@ const scrapeDiscovery = declareDiscoveryExtension({
 
 const app = new Hono();
 
+// Serve static files (like the logo) from the 'public' directory
+app.use('/public/*', serveStatic({ root: './' }));
+
 // Root route for browsers and judges
 app.get('/', (c) => {
     return c.html(`
         <html>
             <head>
                 <title>Scrape402 API</title>
+                <meta property="og:title" content="Scrape402" />
+                <meta property="og:description" content="Scrape402 is a pay-per-request infrastructure API that solves one of the biggest bottlenecks in the AI industry: giving autonomous agents reliable access to the internet." />
+                <meta property="og:image" content="https://api.scrape402.site/public/logo.jpg" />
                 <style>
                     body { font-family: system-ui, sans-serif; padding: 40px; background: #000; color: #fff; line-height: 1.6; }
                     h1 { color: #00ff88; }
