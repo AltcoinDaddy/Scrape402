@@ -13,7 +13,7 @@ if (!avmMnemonic) {
     );
 }
 
-const targetUrl = "https://scrape402.vercel.app/scrape?url=https://example.com";
+const targetUrl = "https://api.scrape402.site/scrape?url=https://example.com";
 
 async function main(): Promise<void> {
     const account = algosdk.mnemonicToSecretKey(avmMnemonic);
