@@ -53,7 +53,7 @@ app.get('/', (c) => {
                 <title>Scrape402 API</title>
                 <meta property="og:title" content="Scrape402" />
                 <meta property="og:description" content="Scrape402 is a pay-per-request infrastructure API that solves one of the biggest bottlenecks in the AI industry: giving autonomous agents reliable access to the internet." />
-                <meta property="og:image" content="https://api.scrape402.site/public/logo.jpg" />
+                <meta property="og:image" content="https://api.scrape402.site/public/logo.png" />
                 <style>
                     body { font-family: system-ui, sans-serif; padding: 40px; background: #000; color: #fff; line-height: 1.6; }
                     h1 { color: #00ff88; }
