@@ -1,0 +1,9 @@
+node_modules
+.git
+.env
+Dockerfile
+README.md
+task.md
+spec.md
+walkthrough.md
+instructions.md

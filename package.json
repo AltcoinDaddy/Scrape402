@@ -1,0 +1,34 @@
+{
+  "name": "scrape402",
+  "version": "1.0.0",
+  "description": "**Scrape402** is a pay-per-request infrastructure API that solves one of the biggest bottlenecks in the AI industry: giving autonomous agents reliable access to the internet.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@algorandfoundation/algokit-utils": "^10.0.0-alpha.46",
+    "@hono/node-server": "^2.0.11",
+    "@x402-avm/extensions": "^2.6.1",
+    "@x402/avm": "^2.19.0",
+    "@x402/core": "^2.19.0",
+    "@x402/fetch": "^2.19.0",
+    "@x402/hono": "^2.19.0",
+    "algosdk": "^3.6.0",
+    "dotenv": "^17.4.2",
+    "ethers": "^6.17.0",
+    "hono": "^4.12.31",
+    "playwright": "^1.61.1",
+    "turndown": "^7.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/turndown": "^5.0.6",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  }
+}
