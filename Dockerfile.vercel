@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Install application dependencies
-RUN npm install
+# Install application dependencies (force devDependencies for tsx)
+RUN npm install --include=dev
 
 # Install ONLY the Chromium browser and its specific OS dependencies
 # This drastically reduces the image size compared to the official Playwright image
