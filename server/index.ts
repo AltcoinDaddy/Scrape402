@@ -134,10 +134,7 @@ app.get('/', (c) => {
 
             <!-- Hero Section -->
             <main class="max-w-[1400px] mx-auto px-6 pt-24 pb-32 text-center">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 text-xs font-semibold mb-8 border border-teal-200 dark:border-teal-500/20">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                    APIs for scalable web intelligence
-                </div>
+
                 
                 <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter leading-[1.1] max-w-4xl mx-auto mb-6">
                     Build AI systems grounded <br class="hidden md:block" /> in real-world web data
