@@ -271,7 +271,7 @@ app.post("/faucet/algo", async (c) => {
         const txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
             sender: serverAccount.addr,
             receiver: address,
-            amount: 400_000, // 0.4 ALGO to cover Min Balance + Fees
+            amount: 250_000, // 0.25 ALGO to cover Min Balance (0.2) + Fees
             suggestedParams: params,
         });
         const signedTxn = txn.signTxn(serverAccount.sk);
@@ -295,7 +295,7 @@ app.post("/faucet/usdc", async (c) => {
             sender: serverAccount.addr,
             receiver: address,
             assetIndex: 31566704, // Mainnet USDC
-            amount: 200_000, // 0.2 USDC (6 decimals)
+            amount: 100_000, // 0.1 USDC (6 decimals) - Exact cost of API
             suggestedParams: params,
         });
         const signedTxn = txn.signTxn(serverAccount.sk);
