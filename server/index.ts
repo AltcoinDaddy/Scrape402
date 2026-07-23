@@ -133,11 +133,11 @@ app.get('/', (c) => {
 
                 
                 <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter leading-[1.1] max-w-4xl mx-auto mb-6">
-                    Build AI systems grounded <br class="hidden md:block" /> in real-world web data
+                    Turn any webpage into <br class="hidden md:block" /> clean markdown for AI
                 </h1>
                 
                 <p class="text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-                    APIs to crawl, index, and synthesize web data into structured formats developers and autonomous agents can trust. Paid natively via the x402 protocol.
+                    Extract clean, structured markdown from any URL while bypassing common anti-bot protections. Paid natively via the Algorand x402 protocol.
                 </p>
                 
                 <div class="flex items-center justify-center gap-4">
