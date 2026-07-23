@@ -13,3 +13,4 @@ Instead of requiring developers to sign up for expensive $50/month API subscript
 When an agent hits the API, it receives an HTTP `402 Payment Required` challenge. The agent instantly signs and broadcasts a micro-transaction (e.g., 0.1 ALGO / ~$0.01) on Algorand. Once the payment settles in seconds, the API fulfills the request. 
 
 By leveraging Algorand's fraction-of-a-cent fees and lightning-fast finality, Scrape402 makes programmatic micro-transactions economically viable, unlocking true "agentic commerce" where AIs can seamlessly pay their own way across the web.
+ 
