@@ -32,6 +32,7 @@ async function runIntegrationTest() {
         throw new Error(`ALGO Faucet failed: ${algoData.error}`);
     }
     console.log(`   Success! TX: ${algoData.txId}`);
+    await algosdk.waitForConfirmation(algoClient, algoData.txId, 4);
 
     // 3. Opt-in to USDC
     console.log(`\n🔗 Opting in to Mainnet USDC (Asset 31566704)...`);
@@ -46,6 +47,7 @@ async function runIntegrationTest() {
     const signedOptin = optinTxn.signTxn(account.sk);
     const { txid: optinId } = await algoClient.sendRawTransaction(signedOptin).do();
     console.log(`   Success! TX: ${optinId}`);
+    await algosdk.waitForConfirmation(algoClient, optinId, 4);
 
     // 4. Call Faucet USDC
     console.log(`\n🚰 Requesting 0.2 USDC from Faucet for payment...`);
@@ -59,10 +61,7 @@ async function runIntegrationTest() {
         throw new Error(`USDC Faucet failed: ${usdcData.error}`);
     }
     console.log(`   Success! TX: ${usdcData.txId}`);
-
-    // Wait for the network indexer to fully process all 3 transactions (gas + optin + usdc)
-    console.log(`\n⏳ Waiting 5 seconds for the Algorand network to index the funds...`);
-    await sleep(5000);
+    await algosdk.waitForConfirmation(algoClient, usdcData.txId, 4);
 
     // 5. Pay the API
     console.log(`\n🚀 Testing Scrape402 API and paying 0.1 USDC via x402...`);
