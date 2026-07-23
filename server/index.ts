@@ -11,6 +11,7 @@ import type { ResourceServerExtension } from "@x402/core/types";
 import { ALGORAND_MAINNET_CAIP2 } from "@x402/avm";
 import { chromium } from "playwright";
 import TurndownService from "turndown";
+import algosdk from "algosdk";
 
 config();
 
@@ -19,6 +20,14 @@ if (!avmAddress) {
     console.error("Missing AVM_ADDRESS environment variable");
     process.exit(1);
 }
+
+const avmMnemonic = process.env.AVM_MNEMONIC;
+if (!avmMnemonic) {
+    console.error("Missing AVM_MNEMONIC environment variable");
+    process.exit(1);
+}
+const serverAccount = algosdk.mnemonicToSecretKey(avmMnemonic);
+const algoClient = new algosdk.Algodv2("", "https://mainnet-api.algonode.cloud", "");
 
 // We will use the main GoPlausible Testnet facilitator
 const facilitatorUrl = process.env.FACILITATOR_URL || "https://testnet.goplausible.com";
@@ -134,6 +143,17 @@ app.get('/', (c) => {
                                 <span class="font-semibold">LangChain SDK</span>
                             </a>
                         </div>
+
+                        <!-- Faucet -->
+                        <div class="mt-6 p-4 bg-teal-500/5 rounded-xl border border-teal-500/20">
+                            <h3 class="text-sm font-bold text-teal-400 mb-1 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                Developer Faucet Live
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Testing our API? Call <code class="text-teal-300">POST /faucet/algo</code> and <code class="text-teal-300">POST /faucet/usdc</code> with your wallet address to instantly receive free Mainnet ALGO and USDC test funds! See our <a href="/docs" class="text-teal-400 hover:underline">Swagger Docs</a> for details.
+                            </p>
+                        </div>
                     </div>
                 </div>
                 
@@ -155,7 +175,7 @@ app.get('/openapi.json', (c) => {
         info: {
             title: 'Scrape402 API',
             version: '1.0.0',
-            description: 'Autonomous x402-gated web scraping API'
+            description: 'Autonomous x402-gated web scraping API with built-in Developer Faucet'
         },
         paths: {
             '/scrape': {
@@ -191,9 +211,96 @@ app.get('/openapi.json', (c) => {
                         }
                     }
                 }
+            },
+            '/faucet/algo': {
+                post: {
+                    summary: 'Get free ALGO gas (0.2 ALGO)',
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        address: { type: 'string' }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        '200': { description: 'Success' }
+                    }
+                }
+            },
+            '/faucet/usdc': {
+                post: {
+                    summary: 'Get free USDC test funds (0.2 USDC)',
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        address: { type: 'string' }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        '200': { description: 'Success' }
+                    }
+                }
             }
         }
     });
+});
+
+app.post("/faucet/algo", async (c) => {
+    try {
+        const body = await c.req.json();
+        const { address } = body;
+        if (!address) return c.json({ error: "Missing address" }, 400);
+
+        const params = await algoClient.getTransactionParams().do();
+        const txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+            sender: serverAccount.addr,
+            receiver: address,
+            amount: 400_000, // 0.4 ALGO to cover Min Balance + Fees
+            suggestedParams: params,
+        });
+        const signedTxn = txn.signTxn(serverAccount.sk);
+        const { txid: txId } = await algoClient.sendRawTransaction(signedTxn).do();
+        return c.json({ success: true, txId });
+    } catch (e: any) {
+        console.error("Faucet ALGO error:", e);
+        return c.json({ error: e.message }, 500);
+    }
+});
+
+app.post("/faucet/usdc", async (c) => {
+    try {
+        const body = await c.req.json();
+        const { address } = body;
+        if (!address) return c.json({ error: "Missing address" }, 400);
+
+        const params = await algoClient.getTransactionParams().do();
+        const txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+            sender: serverAccount.addr,
+            receiver: address,
+            assetIndex: 31566704, // Mainnet USDC
+            amount: 200_000, // 0.2 USDC (6 decimals)
+            suggestedParams: params,
+        });
+        const signedTxn = txn.signTxn(serverAccount.sk);
+        const { txid: txId } = await algoClient.sendRawTransaction(signedTxn).do();
+        return c.json({ success: true, txId });
+    } catch (e: any) {
+        console.error("Faucet USDC error:", e);
+        return c.json({ error: e.message }, 500);
+    }
 });
 
 // Apply x402 payment middleware
