@@ -5,7 +5,7 @@ import { toClientAvmSigner, ExactAvmScheme, ALGORAND_MAINNET_CAIP2 } from "@x402
 const algoClient = new algosdk.Algodv2("", "https://mainnet-api.algonode.cloud", "");
 
 // Set to true to test against local server, false for production Vercel server
-const LOCAL_TEST = true; 
+const LOCAL_TEST = false; 
 const SERVER_URL = LOCAL_TEST ? "http://localhost:4021" : "https://api.scrape402.site";
 
 async function sleep(ms: number) {
