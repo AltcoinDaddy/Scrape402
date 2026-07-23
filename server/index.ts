@@ -22,11 +22,13 @@ if (!avmAddress) {
 }
 
 const avmMnemonic = process.env.AVM_MNEMONIC;
+let serverAccount: algosdk.Account | null = null;
+
 if (!avmMnemonic) {
-    console.error("Missing AVM_MNEMONIC environment variable");
-    process.exit(1);
+    console.warn("⚠️ Missing AVM_MNEMONIC environment variable. Faucet endpoints will be disabled.");
+} else {
+    serverAccount = algosdk.mnemonicToSecretKey(avmMnemonic);
 }
-const serverAccount = algosdk.mnemonicToSecretKey(avmMnemonic);
 const algoClient = new algosdk.Algodv2("", "https://mainnet-api.algonode.cloud", "");
 
 // We will use the main GoPlausible Testnet facilitator
@@ -260,6 +262,7 @@ app.get('/openapi.json', (c) => {
 
 app.post("/faucet/algo", async (c) => {
     try {
+        if (!serverAccount) return c.json({ error: "Faucet is disabled on this server." }, 503);
         const body = await c.req.json();
         const { address } = body;
         if (!address) return c.json({ error: "Missing address" }, 400);
@@ -282,6 +285,7 @@ app.post("/faucet/algo", async (c) => {
 
 app.post("/faucet/usdc", async (c) => {
     try {
+        if (!serverAccount) return c.json({ error: "Faucet is disabled on this server." }, 503);
         const body = await c.req.json();
         const { address } = body;
         if (!address) return c.json({ error: "Missing address" }, 400);
