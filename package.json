@@ -4,6 +4,7 @@
   "description": "**Scrape402** is a pay-per-request infrastructure API that solves one of the biggest bottlenecks in the AI industry: giving autonomous agents reliable access to the internet.",
   "main": "index.js",
   "scripts": {
+    "dev": "tsx server/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

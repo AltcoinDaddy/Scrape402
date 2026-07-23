@@ -153,7 +153,7 @@ app.get('/', (c) => {
                 <div class="mt-20 relative mx-auto max-w-6xl rounded-[2rem] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 bento-shadow overflow-hidden flex text-left h-[700px]">
                     
                     <!-- Sidebar -->
-                    <div class="w-64 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 p-6 flex-col gap-8 hidden md:flex">
+                    <div class="w-64 shrink-0 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 p-6 flex-col gap-8 hidden md:flex">
                         <div class="flex items-center gap-2 font-bold text-sm tracking-tight">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> 
                             SCRAPE402
@@ -175,11 +175,12 @@ app.get('/', (c) => {
                                         Research
                                     </div>
                                 </div>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Main Dashboard Panel -->
-                    <div class="flex-1 bg-white dark:bg-zinc-900 p-8 md:p-12 overflow-y-auto relative">
+                    <div class="flex-1 min-w-0 bg-white dark:bg-zinc-900 p-8 md:p-12 overflow-y-auto relative">
                         <h2 class="text-2xl font-semibold tracking-tight mb-10">Web Data Infrastructure for AI Applications</h2>
                         
                         <h3 class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-4">Our Endpoints</h3>
