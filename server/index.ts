@@ -154,10 +154,7 @@ app.get('/', (c) => {
                     
                     <!-- Sidebar -->
                     <div class="w-64 shrink-0 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 p-6 flex-col gap-8 hidden md:flex">
-                        <div class="flex items-center gap-2 font-bold text-sm tracking-tight">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> 
-                            SCRAPE402
-                        </div>
+
                         <div class="space-y-8">
                             <div>
                                 <div class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-3">API Playground</div>
