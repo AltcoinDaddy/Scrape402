@@ -220,7 +220,7 @@ app.get('/', (c) => {
                                 </div>
                                 <div class="min-w-0">
                                     <div class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Merchant Wallet</div>
-                                    <div class="text-[11px] text-zinc-500 font-mono mt-0.5 truncate">${avmAddress}</div>
+                                    <div class="text-[11px] text-zinc-500 font-mono mt-0.5 break-all pr-2">${avmAddress}</div>
                                 </div>
                             </div>
                             
