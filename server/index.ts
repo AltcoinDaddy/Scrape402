@@ -112,7 +112,7 @@ app.get('/', (c) => {
             <nav class="sticky top-0 z-50 w-full border-b border-zinc-200 dark:border-zinc-800/80 bg-zinc-50/80 dark:bg-zinc-950/80 backdrop-blur-md">
                 <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
                     <div class="flex items-center gap-2 font-semibold text-lg tracking-tight">
-                        <svg class="w-6 h-6 text-zinc-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <img src="/public/logo.png" alt="Scrape402 Logo" class="w-8 h-8 object-contain mix-blend-multiply dark:mix-blend-screen" />
                         Scrape402
                     </div>
                     <div class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-500 dark:text-zinc-400">
