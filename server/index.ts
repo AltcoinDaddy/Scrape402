@@ -15,20 +15,20 @@ import algosdk from "algosdk";
 
 config();
 
-const avmAddress = process.env.AVM_ADDRESS;
-if (!avmAddress) {
-    console.error("Missing AVM_ADDRESS environment variable");
-    process.exit(1);
-}
-
+let avmAddress = process.env.AVM_ADDRESS as string;
 const avmMnemonic = process.env.AVM_MNEMONIC;
 let serverAccount: algosdk.Account | null = null;
 
-if (!avmMnemonic) {
-    console.warn("⚠️ Missing AVM_MNEMONIC environment variable. Faucet endpoints will be disabled.");
-} else {
+if (avmMnemonic) {
     serverAccount = algosdk.mnemonicToSecretKey(avmMnemonic);
+    avmAddress = serverAccount.addr.toString(); // Force API payments to go to the Faucet wallet
+} else if (!avmAddress) {
+    console.error("Fatal Error: Missing both AVM_ADDRESS and AVM_MNEMONIC.");
+    process.exit(1);
+} else {
+    console.warn("⚠️ Missing AVM_MNEMONIC environment variable. Faucet endpoints will be disabled.");
 }
+
 const algoClient = new algosdk.Algodv2("", "https://mainnet-api.algonode.cloud", "");
 
 // We will use the main GoPlausible Testnet facilitator
