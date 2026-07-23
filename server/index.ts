@@ -60,110 +60,217 @@ app.use('/public/*', serveStatic({ root: './' }));
 app.get('/', (c) => {
     return c.html(`
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="en" class="dark">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Scrape402 API</title>
+            <title>Scrape402 | APIs for scalable web intelligence</title>
             <meta property="og:title" content="Scrape402" />
-            <meta property="og:description" content="Scrape402 is a pay-per-request infrastructure API that solves one of the biggest bottlenecks in the AI industry: giving autonomous agents reliable access to the internet." />
-            <meta property="og:image" content="https://api.scrape402.site/public/logo.png" />
+            <meta property="og:description" content="Pay-per-request infrastructure API that solves one of the biggest bottlenecks in the AI industry: giving autonomous agents reliable access to the internet." />
+            
+            <script>
+                // Theme initialization
+                if (localStorage.theme === 'light' || (!('theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.remove('dark')
+                } else {
+                    document.documentElement.classList.add('dark')
+                }
+                function toggleTheme() {
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.theme = 'light';
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.theme = 'dark';
+                    }
+                }
+            </script>
             <script src="https://cdn.tailwindcss.com"></script>
-            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+            <script>
+                tailwind.config = {
+                    darkMode: 'class',
+                    theme: {
+                        extend: {
+                            fontFamily: {
+                                sans: ['Geist', 'sans-serif'],
+                                mono: ['Geist Mono', 'monospace'],
+                            }
+                        }
+                    }
+                }
+            </script>
+            <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
             <style>
-                body {
-                    font-family: 'Inter', sans-serif;
-                    background-color: #0f172a;
-                    background-image: 
-                        radial-gradient(at 0% 0%, hsla(160, 100%, 30%, 0.15) 0px, transparent 50%),
-                        radial-gradient(at 100% 100%, hsla(200, 100%, 30%, 0.15) 0px, transparent 50%);
-                    color: #f8fafc;
-                }
-                .glass-card {
-                    background: rgba(30, 41, 59, 0.7);
-                    backdrop-filter: blur(16px);
-                    -webkit-backdrop-filter: blur(16px);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                }
-                .code-font {
-                    font-family: 'Fira Code', monospace;
-                }
-                .gradient-text {
-                    background: linear-gradient(to right, #2dd4bf, #3b82f6);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                }
-                .animate-float {
-                    animation: float 6s ease-in-out infinite;
-                }
-                @keyframes float {
-                    0% { transform: translateY(0px); }
-                    50% { transform: translateY(-10px); }
-                    100% { transform: translateY(0px); }
-                }
+                body { font-family: 'Geist', sans-serif; }
+                .bento-shadow { box-shadow: 0 24px 80px -12px rgba(0,0,0,0.25); }
+                .dark .bento-shadow { box-shadow: 0 24px 80px -12px rgba(0,0,0,0.8); }
             </style>
         </head>
-        <body class="min-h-screen flex items-center justify-center p-6">
-            <div class="max-w-3xl w-full">
-                <!-- Header -->
-                <div class="text-center mb-12 animate-float">
-                    <img src="/public/logo.png" alt="Scrape402 Logo" class="w-32 h-32 mx-auto rounded-full shadow-[0_0_40px_rgba(45,212,191,0.3)] mb-6 border-2 border-teal-400/30">
-                    <h1 class="text-5xl font-extrabold tracking-tight mb-4"><span class="gradient-text">Scrape402</span> API</h1>
-                    <p class="text-xl text-slate-400 font-medium">Unblockable internet access for autonomous AI agents.</p>
-                </div>
-
-                <!-- Main Card -->
-                <div class="glass-card rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-400 to-blue-500"></div>
-                    
-                    <div class="space-y-8">
-                        <!-- Endpoint -->
-                        <div>
-                            <h3 class="text-sm uppercase tracking-widest text-slate-500 font-semibold mb-2">Endpoint</h3>
-                            <div class="bg-slate-900/80 rounded-xl p-4 border border-slate-700/50 flex items-center justify-between">
-                                <code class="code-font text-teal-400 text-lg">GET /scrape?url=...</code>
-                                <span class="bg-teal-500/10 text-teal-400 text-xs px-3 py-1 rounded-full font-bold border border-teal-500/20">0.1 USDC</span>
-                            </div>
-                        </div>
-
-                        <!-- Wallet -->
-                        <div>
-                            <h3 class="text-sm uppercase tracking-widest text-slate-500 font-semibold mb-2">Merchant Wallet (Algorand)</h3>
-                            <div class="bg-slate-900/80 rounded-xl p-4 border border-slate-700/50">
-                                <code class="code-font text-blue-400 text-sm break-all">${avmAddress}</code>
-                            </div>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-700/50">
-                            <a href="/docs" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white p-4 rounded-xl transition-all duration-200 border border-slate-600 hover:border-teal-500 group">
-                                <svg class="w-5 h-5 text-teal-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                <span class="font-semibold">View OpenAPI Docs</span>
-                            </a>
-                            <a href="https://www.npmjs.com/package/scrape402-langchain" target="_blank" class="flex items-center justify-center gap-2 bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 p-4 rounded-xl transition-all duration-200 border border-teal-500/30 group">
-                                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                                <span class="font-semibold">LangChain SDK</span>
-                            </a>
-                        </div>
-
-                        <!-- Faucet -->
-                        <div class="mt-6 p-4 bg-teal-500/5 rounded-xl border border-teal-500/20">
-                            <h3 class="text-sm font-bold text-teal-400 mb-1 flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                                Developer Faucet Live
-                            </h3>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                Testing our API? Call <code class="text-teal-300">POST /faucet/algo</code> and <code class="text-teal-300">POST /faucet/usdc</code> with your wallet address to instantly receive free Mainnet ALGO and USDC test funds! See our <a href="/docs" class="text-teal-400 hover:underline">Swagger Docs</a> for details.
-                            </p>
-                        </div>
+        <body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-200 antialiased min-h-screen selection:bg-teal-500/30">
+            
+            <!-- Navigation -->
+            <nav class="sticky top-0 z-50 w-full border-b border-zinc-200 dark:border-zinc-800/80 bg-zinc-50/80 dark:bg-zinc-950/80 backdrop-blur-md">
+                <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+                    <div class="flex items-center gap-2 font-semibold text-lg tracking-tight">
+                        <svg class="w-6 h-6 text-zinc-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Scrape402
+                    </div>
+                    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                        <a href="#" class="text-zinc-900 dark:text-zinc-50">Home</a>
+                        <a href="/docs" class="hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">Platform</a>
+                        <a href="/docs" class="hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">Resources</a>
+                        <a href="https://github.com/AltcoinDaddy/Scrape402" target="_blank" class="hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">GitHub</a>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="toggleTheme()" class="p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800">
+                            <!-- Theme Icon -->
+                            <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </button>
+                        <a href="/docs" class="text-sm font-medium bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-4 py-2 rounded-full hover:opacity-90 transition-opacity">Get started</a>
                     </div>
                 </div>
-                
-                <!-- Footer -->
-                <div class="text-center mt-8 text-slate-500 text-sm">
-                    Powered by the <a href="https://x402.org" target="_blank" class="text-slate-400 hover:text-white transition-colors underline decoration-slate-600 underline-offset-4">x402 Protocol</a>
+            </nav>
+
+            <!-- Hero Section -->
+            <main class="max-w-[1400px] mx-auto px-6 pt-24 pb-32 text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 text-xs font-semibold mb-8 border border-teal-200 dark:border-teal-500/20">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    APIs for scalable web intelligence
                 </div>
-            </div>
+                
+                <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter leading-[1.1] max-w-4xl mx-auto mb-6">
+                    Build AI systems grounded <br class="hidden md:block" /> in real-world web data
+                </h1>
+                
+                <p class="text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    APIs to crawl, index, and synthesize web data into structured formats developers and autonomous agents can trust. Paid natively via the x402 protocol.
+                </p>
+                
+                <div class="flex items-center justify-center gap-4">
+                    <a href="/docs" class="text-sm font-medium bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
+                        Request API access
+                    </a>
+                    <a href="/docs" class="text-sm font-medium bg-transparent text-zinc-900 dark:text-zinc-50 border border-zinc-200 dark:border-zinc-800 px-6 py-3 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                        View API docs
+                    </a>
+                </div>
+
+                <!-- Dashboard Mockup (Bento) -->
+                <div class="mt-20 relative mx-auto max-w-6xl rounded-[2rem] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 bento-shadow overflow-hidden flex text-left h-[700px]">
+                    
+                    <!-- Sidebar -->
+                    <div class="w-64 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 p-6 flex-col gap-8 hidden md:flex">
+                        <div class="flex items-center gap-2 font-bold text-sm tracking-tight">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> 
+                            SCRAPE402
+                        </div>
+                        <div class="space-y-8">
+                            <div>
+                                <div class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-3">API Playground</div>
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white dark:bg-zinc-800/80 text-sm font-medium text-zinc-900 dark:text-zinc-50 shadow-sm border border-zinc-200 dark:border-zinc-700">
+                                        <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg> 
+                                        Extract
+                                    </div>
+                                    <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800/50 text-sm font-medium text-zinc-500 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                        Faucet
+                                    </div>
+                                    <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800/50 text-sm font-medium text-zinc-500 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                        Research
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-3">Management</div>
+                                <div class="space-y-1 text-sm font-medium text-zinc-500">
+                                    <div class="flex items-center gap-3 px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-lg transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Usage
+                                    </div>
+                                    <div class="flex items-center gap-3 px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-lg transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg> Billing
+                                    </div>
+                                    <div class="flex items-center gap-3 px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-lg transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg> API Keys
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Dashboard Panel -->
+                    <div class="flex-1 bg-white dark:bg-zinc-900 p-8 md:p-12 overflow-y-auto relative">
+                        <h2 class="text-2xl font-semibold tracking-tight mb-10">Web Data Infrastructure for AI Applications</h2>
+                        
+                        <h3 class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-4">Our Endpoints</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+                            <!-- Discovery/Extract API Card -->
+                            <div class="rounded-[1rem] border border-teal-200 dark:border-teal-900 bg-teal-50/50 dark:bg-teal-900/10 p-5 flex flex-col justify-between h-40 group hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
+                                <div>
+                                    <div class="text-teal-700 dark:text-teal-400 font-semibold mb-1">Extraction API</div>
+                                    <div class="text-xs text-teal-600/80 dark:text-teal-400/70 leading-relaxed pr-4">Returns webpage contents as clean markdown, bypassing standard anti-bot protections.</div>
+                                </div>
+                                <div class="flex items-center justify-between mt-4">
+                                    <code class="text-[11px] font-mono text-teal-800 dark:text-teal-200 bg-teal-100/50 dark:bg-teal-900/30 px-2 py-1 rounded">GET /scrape?url=...</code>
+                                    <a href="/docs" class="text-[11px] font-semibold text-teal-700 dark:text-teal-300 bg-white dark:bg-zinc-800 px-4 py-1.5 rounded-full border border-teal-200 dark:border-teal-800 hover:bg-teal-50 dark:hover:bg-zinc-700 transition-colors shadow-sm">Explore API</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Faucet Card -->
+                            <div class="rounded-[1rem] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 flex flex-col justify-between h-40 group hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors">
+                                <div>
+                                    <div class="text-zinc-900 dark:text-zinc-100 font-semibold mb-1">Developer Faucet</div>
+                                    <div class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed pr-4">Instantly receive free Mainnet ALGO and USDC test funds for x402 payment testing.</div>
+                                </div>
+                                <div class="flex items-center gap-2 mt-4">
+                                    <a href="/docs" class="flex-1 text-center text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-800 px-4 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">Get ALGO</a>
+                                    <a href="/docs" class="flex-1 text-center text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-800 px-4 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">Get USDC</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-4">Get Started</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Payment Wallet -->
+                            <div class="flex items-center gap-4 p-4 rounded-[1rem] border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+                                <div class="w-10 h-10 shrink-0 rounded-full bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"></path></svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Merchant Wallet</div>
+                                    <div class="text-[11px] text-zinc-500 font-mono mt-0.5 truncate">${avmAddress}</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Usage -->
+                            <div class="flex items-center gap-4 p-4 rounded-[1rem] border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+                                <div class="w-10 h-10 shrink-0 rounded-full bg-red-100 dark:bg-red-500/10 flex items-center justify-center text-red-600 dark:text-red-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13h2.625L7.5 9.25l2.25 10.5L14.25 6l2.25 10.5L18.375 13H21"></path></svg>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Usage Cost</div>
+                                    <div class="text-xs text-zinc-500 mt-0.5">Fixed rate: 0.1 USDC / request</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- AI Input Chat Bar -->
+                        <div class="mt-12 mb-8 relative max-w-3xl mx-auto">
+                            <!-- Fades bottom -->
+                            <div class="p-4 pl-5 pr-3 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 shadow-sm flex items-center gap-3">
+                                <span class="text-sm text-zinc-400 flex-1">Ask about endpoints, schema design, or workflow orchestration...</span>
+                                <div class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center text-zinc-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
         </body>
         </html>
     `);
