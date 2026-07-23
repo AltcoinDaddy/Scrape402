@@ -65,6 +65,7 @@ app.get('/', (c) => {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Scrape402 | APIs for scalable web intelligence</title>
+            <link rel="icon" type="image/png" href="/public/logo.png" />
             <meta property="og:title" content="Scrape402" />
             <meta property="og:description" content="Pay-per-request infrastructure API that solves one of the biggest bottlenecks in the AI industry: giving autonomous agents reliable access to the internet." />
             
