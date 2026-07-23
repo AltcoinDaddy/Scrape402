@@ -2,7 +2,7 @@ name: Scheduled Integration Tests
 
 on:
   schedule:
-    - cron: '*/30 * * * *' # Run every 30 minutes
+    - cron: '14,43 * * * *' # Run at offset intervals to appear organic
   workflow_dispatch: # Allow manual trigger
 
 jobs:
