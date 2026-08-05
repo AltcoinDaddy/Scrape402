@@ -53,8 +53,278 @@ const scrapeDiscovery = declareDiscoveryExtension({
 
 const app = new Hono();
 
+const BASE_URL = process.env.BASE_URL || "https://api.scrape402.site";
+
 // Serve static files (like the logo) from the 'public' directory
 app.use('/public/*', serveStatic({ root: './' }));
+
+// ──────────────────────────────────────────────────────────────────────
+// Discovery & Metadata Endpoints (SEO / AEO / Agent Discovery)
+// ──────────────────────────────────────────────────────────────────────
+
+// A2A Agent Card — makes the service discoverable by other AI agents
+app.get('/.well-known/agent-card.json', (c) => {
+    return c.json({
+        name: "scrape402",
+        description: "Pay-per-request web scraping API for autonomous AI agents. Send a URL, get clean markdown. Paid natively via x402 USDC micro-payments on Algorand.",
+        url: BASE_URL,
+        version: "1.0.0",
+        capabilities: {
+            streaming: false,
+            pushNotifications: false
+        },
+        skills: [
+            {
+                id: "web-scraping",
+                name: "Web Page Scraping",
+                description: "Extract clean, structured markdown from any URL while bypassing common anti-bot protections like Cloudflare, reCAPTCHA, and paywalls.",
+                tags: ["scraping", "markdown", "web-data", "ai-agents"],
+                examples: [
+                    "Scrape https://news.ycombinator.com and return markdown",
+                    "Extract article text from a URL"
+                ]
+            }
+        ],
+        provider: {
+            organization: "Scrape402",
+            url: BASE_URL
+        },
+        authentication: {
+            schemes: ["x402"]
+        },
+        defaultInputModes: ["application/json"],
+        defaultOutputModes: ["application/json"]
+    });
+});
+
+// AI Plugin manifest — OpenAI-compatible plugin descriptor for LLM tool use
+app.get('/.well-known/ai-plugin.json', (c) => {
+    return c.json({
+        schema_version: "v1",
+        name_for_human: "scrape402",
+        name_for_model: "scrape402",
+        description_for_human: "Pay-per-request web scraping API for AI agents. Send any URL, bypass anti-bot protections, and get clean markdown — paid via x402 USDC on Algorand.",
+        description_for_model: "Use this API to extract clean markdown text from any webpage URL. The service uses a headless browser to bypass Cloudflare, reCAPTCHA, and paywalls. An unpaid request returns HTTP 402 with PAYMENT-REQUIRED; sign the requested 0.1 USDC payment on Algorand client-side and retry with PAYMENT-SIGNATURE. The service never receives wallet keys or submits transactions.",
+        api: {
+            type: "openapi",
+            url: `${BASE_URL}/openapi.json`
+        },
+        logo_url: `${BASE_URL}/public/logo.png`,
+        legal_info_url: `${BASE_URL}`,
+        contact_email: ""
+    });
+});
+
+// x402 Discovery Manifest — payment discovery for agents and directories
+app.get('/.well-known/x402.json', (c) => {
+    return c.json({
+        service: "scrape402",
+        name: "scrape402",
+        version: "1.0.0",
+        description: "x402-gated web scraping API. Extract clean markdown from any URL, paid per request with USDC on Algorand.",
+        x402Version: 2,
+        docsUrl: `${BASE_URL}/docs`,
+        openapiUrl: `${BASE_URL}/openapi.json`,
+        discoveryUrl: `${BASE_URL}/discovery`,
+        logoUrl: `${BASE_URL}/public/logo.png`,
+        facilitator: facilitatorUrl,
+        chains: [
+            {
+                namespace: "algorand",
+                network: "algorand",
+                assets: [
+                    {
+                        symbol: "USDC",
+                        assetId: "31566704",
+                        decimals: 6
+                    }
+                ]
+            }
+        ],
+        resources: [
+            {
+                id: "scrape",
+                method: "GET",
+                path: "/scrape",
+                url: `${BASE_URL}/scrape`,
+                description: "Extract clean, markdown-formatted text from any given URL, bypassing common web blocks like Cloudflare, reCAPTCHA, and paywalls. Returns structured markdown content suitable for LLM consumption.",
+                tags: ["scraping", "markdown", "web-data", "ai-agents", "x402-global-challenge"],
+                price: {
+                    amount: "0.1",
+                    currency: "USDC",
+                    network: "algorand",
+                    asset: "31566704"
+                },
+                x402: {
+                    protocolVersion: 2,
+                    requiredHeaders: ["PAYMENT-REQUIRED", "PAYMENT-SIGNATURE", "PAYMENT-RESPONSE"],
+                    facilitator: facilitatorUrl,
+                    requirementTemplate: {
+                        scheme: "exact",
+                        network: "algorand",
+                        asset: "31566704",
+                        payTo: avmAddress,
+                        maxAmountRequired: "0.1"
+                    },
+                    amountUsdc: "0.1",
+                    amountMicro: "100000"
+                }
+            }
+        ]
+    });
+});
+
+// x402 well-known redirect (without .json extension)
+app.get('/.well-known/x402', (c) => c.redirect('/.well-known/x402.json'));
+
+// Discovery catalog — machine-readable endpoint catalog for agents
+app.get('/discovery', (c) => {
+    return c.json({
+        data: {
+            service: "scrape402",
+            apiVersion: "1.0.0",
+            discoveryVersion: "1.0.0",
+            capabilities: [
+                "web-scraping",
+                "markdown-extraction",
+                "anti-bot-bypass",
+                "x402-paid-data",
+                "agent-discovery",
+                "openapi",
+                "developer-faucet"
+            ],
+            x402ProtocolVersion: 2,
+            endpoints: [
+                {
+                    id: "root",
+                    method: "GET",
+                    path: "/",
+                    access: "free",
+                    summary: "API landing page with branding and metadata",
+                    tags: ["system", "discovery"]
+                },
+                {
+                    id: "docs",
+                    method: "GET",
+                    path: "/docs",
+                    access: "free",
+                    summary: "Interactive Swagger UI API documentation",
+                    tags: ["system", "discovery", "openapi"]
+                },
+                {
+                    id: "openapi",
+                    method: "GET",
+                    path: "/openapi.json",
+                    access: "free",
+                    summary: "OpenAPI 3.0 specification document",
+                    tags: ["discovery", "openapi"]
+                },
+                {
+                    id: "discovery",
+                    method: "GET",
+                    path: "/discovery",
+                    access: "free",
+                    summary: "Machine-readable endpoint catalog for agents",
+                    tags: ["discovery", "agents"]
+                },
+                {
+                    id: "agentCard",
+                    method: "GET",
+                    path: "/.well-known/agent-card.json",
+                    access: "free",
+                    summary: "A2A agent card for agent-to-agent discovery",
+                    tags: ["discovery", "agents", "a2a"]
+                },
+                {
+                    id: "aiPlugin",
+                    method: "GET",
+                    path: "/.well-known/ai-plugin.json",
+                    access: "free",
+                    summary: "OpenAI-compatible AI plugin manifest",
+                    tags: ["discovery", "agents", "ai-plugin"]
+                },
+                {
+                    id: "x402Manifest",
+                    method: "GET",
+                    path: "/.well-known/x402.json",
+                    access: "free",
+                    summary: "x402 discovery manifest for agent and directory indexing",
+                    tags: ["discovery", "agents", "x402"]
+                },
+                {
+                    id: "scrape",
+                    method: "GET",
+                    path: "/scrape",
+                    access: "paid",
+                    summary: "Extract clean markdown from any URL via headless browser",
+                    description: "Extract clean, markdown-formatted text from any given URL, bypassing common web blocks like Cloudflare, reCAPTCHA, and paywalls. Returns structured markdown content suitable for LLM consumption.",
+                    tags: ["scraping", "markdown", "web-data", "ai-agents", "x402-global-challenge"],
+                    queryParams: ["url"],
+                    responseCodes: [200, 400, 402, 500],
+                    x402: {
+                        protocolVersion: 2,
+                        requiredHeaders: ["PAYMENT-REQUIRED", "PAYMENT-SIGNATURE", "PAYMENT-RESPONSE"],
+                        facilitator: facilitatorUrl,
+                        requirementTemplate: {
+                            scheme: "exact",
+                            network: "algorand",
+                            asset: "31566704",
+                            payTo: avmAddress,
+                            maxAmountRequired: "0.1"
+                        },
+                        amountUsdc: "0.1",
+                        amountMicro: "100000"
+                    }
+                },
+                {
+                    id: "faucetAlgo",
+                    method: "POST",
+                    path: "/faucet/algo",
+                    access: "free",
+                    summary: "Developer faucet — get free ALGO gas for testing",
+                    tags: ["faucet", "developer"]
+                },
+                {
+                    id: "faucetUsdc",
+                    method: "POST",
+                    path: "/faucet/usdc",
+                    access: "free",
+                    summary: "Developer faucet — get free USDC for x402 payment testing",
+                    tags: ["faucet", "developer"]
+                }
+            ],
+            errorCatalog: [
+                { code: "MISSING_PAYMENT_SIGNATURE", httpStatus: 402, description: "The paid endpoint was called without payment." },
+                { code: "VALIDATION_ERROR", httpStatus: 400, description: "Missing or invalid query parameters." },
+                { code: "SCRAPE_FAILED", httpStatus: 500, description: "Headless browser failed to load or extract content." }
+            ]
+        }
+    });
+});
+
+// links.txt — agent-friendly link discovery file
+app.get('/links.txt', (c) => {
+    c.header('Content-Type', 'text/plain');
+    return c.text(
+`# Scrape402 — Links for agents and crawlers
+# API Endpoints
+${BASE_URL}/
+${BASE_URL}/docs
+${BASE_URL}/openapi.json
+${BASE_URL}/scrape?url=https://example.com
+
+# Discovery & Metadata
+${BASE_URL}/.well-known/agent-card.json
+${BASE_URL}/.well-known/ai-plugin.json
+${BASE_URL}/.well-known/x402.json
+${BASE_URL}/discovery
+${BASE_URL}/links.txt
+
+# Developer Faucet
+${BASE_URL}/faucet/algo
+${BASE_URL}/faucet/usdc
+`);
+});
 
 // Root route for browsers and judges
 app.get('/', (c) => {
@@ -64,10 +334,37 @@ app.get('/', (c) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Scrape402 | APIs for scalable web intelligence</title>
+            <title>Scrape402 | Pay-per-request web scraping API for AI agents</title>
+            <meta name="description" content="Scrape402 is a pay-per-request web scraping API for autonomous AI agents. Send any URL, bypass Cloudflare and anti-bot protections, get clean markdown — paid via x402 USDC micro-payments on Algorand." />
+            <meta name="robots" content="index,follow" />
+            <link rel="canonical" href="${BASE_URL}/" />
             <link rel="icon" type="image/png" href="/public/logo.png" />
-            <meta property="og:title" content="Scrape402" />
-            <meta property="og:description" content="Pay-per-request infrastructure API that solves one of the biggest bottlenecks in the AI industry: giving autonomous agents reliable access to the internet." />
+            <link rel="apple-touch-icon" href="/public/logo.png" />
+
+            <!-- Open Graph -->
+            <meta property="og:type" content="website" />
+            <meta property="og:site_name" content="Scrape402" />
+            <meta property="og:title" content="Scrape402 | Pay-per-request web scraping API for AI agents" />
+            <meta property="og:description" content="Scrape402 is a pay-per-request web scraping API for autonomous AI agents. Send any URL, bypass Cloudflare and anti-bot protections, get clean markdown — paid via x402 USDC micro-payments on Algorand." />
+            <meta property="og:url" content="${BASE_URL}/" />
+            <meta property="og:image" content="${BASE_URL}/public/logo.png" />
+            <meta property="og:image:alt" content="Scrape402 — x402-paid web scraping API" />
+            <meta property="og:locale" content="en_US" />
+
+            <!-- Twitter Card -->
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content="Scrape402 | Pay-per-request web scraping API for AI agents" />
+            <meta name="twitter:description" content="Scrape402 is a pay-per-request web scraping API for autonomous AI agents. Send any URL, bypass anti-bot protections, get clean markdown — paid via x402 USDC on Algorand." />
+            <meta name="twitter:image" content="${BASE_URL}/public/logo.png" />
+
+            <!-- Agent/AEO metadata -->
+            <link rel="logo" href="${BASE_URL}/public/logo.png" />
+            <meta name="logo" content="${BASE_URL}/public/logo.png" />
+
+            <!-- Structured Data (JSON-LD) -->
+            <script type="application/ld+json">
+                {"@context":"https://schema.org","@type":"WebApplication","name":"Scrape402","url":"${BASE_URL}","logo":"${BASE_URL}/public/logo.png","description":"Scrape402 is a pay-per-request web scraping API for autonomous AI agents. Send any URL, bypass anti-bot protections, get clean markdown — paid via x402 USDC micro-payments on Algorand.","applicationCategory":"DeveloperApplication","operatingSystem":"All"}
+            </script>
             
             <script>
                 // Theme initialization
